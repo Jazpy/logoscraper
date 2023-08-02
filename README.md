@@ -16,7 +16,7 @@ To scrape the websites in `websites.csv`, run with 10 cores, and put the
 results in the `results/` directory:
 
 ```
-python py/logocrawler/driver.py -w websites.csv -c 16 -o results/
+python py/logocrawler/driver.py -w websites.csv -c 10 -o results/
 ```
 
 This will generate two files: `results/results.txt` and `results/candidates.txt`,
