@@ -33,5 +33,6 @@ def write_results(directory, results):
                 res_f.write('NULL\n')
                 can_f.write('NULL\n')
             else:
+                l = [x.strip() for x in l]
                 res_f.write(f'{l[0]}\n')
                 can_f.write(f'{",".join(l)}\n')

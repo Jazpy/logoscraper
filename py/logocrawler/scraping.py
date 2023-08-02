@@ -88,7 +88,7 @@ class Scraper:
 
 
     # Uses beautifulsoup to find img elements
-    def __find_tagged_images(self, text):
+    def __find_tagged_images(self, text, url):
         ret = []
 
         # Get all <img>
@@ -99,11 +99,13 @@ class Scraper:
             # Images without a src are meaningless for this purpose
             if 'src' not in attr_dic:
                 continue
+            i_src = image['src']
 
             # Append any images that have logo somewhere in the element
-            for key in attr_dic:
-                if 'logo' in key:
-                    ret.append(image['src'])
+            for key, val in attr_dic.items():
+                if 'logo' in key.lower() or 'logo' in str(val).lower():
+                    ret.append(f'{url}{i_src}' if i_src.startswith('/')
+                        else i_src)
                     break
 
             # Early exit if we have enough candidates
@@ -122,9 +124,6 @@ class Scraper:
 
     def __make_get_request(self, url):
         # Make web request, handle error codes
-        if not (url.startswith('http://') or url.startswith('https://')):
-            url = f'http://{url}'
-
         response = requests.get(url, headers=self.__headers, timeout=10)
 
         # Raise exception if GET was unsuccessful
@@ -146,11 +145,15 @@ class Scraper:
     def __find_candidates(self, url):
         ret = []
 
+        # Makes it easier to handle local content by adding this here
+        if not (url.startswith('http://') or url.startswith('https://')):
+            url = f'http://{url}'
+
         # Make GET request and store webpage text
         html_text = self.__make_get_request(url)
 
         # First heuristic, tagged images
-        ret.extend(self.__find_tagged_images(html_text))
+        ret.extend(self.__find_tagged_images(html_text, url))
         missing = self.candidates - len(ret)
 
         # Early exit if we found multiple tagged images
