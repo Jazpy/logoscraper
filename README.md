@@ -10,7 +10,7 @@ Start a nix environment with:
 nix-shell default.nix
 ```
 
-or install the requirements in `requirements.txt`
+or install the following libraries: `beautifulsoup4`, `requests`.
 
 To scrape the websites in `websites.csv`, run with 10 cores, and put the
 results in the `results/` directory:
